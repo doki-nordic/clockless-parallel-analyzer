@@ -1,6 +1,12 @@
-# Saleae Simple Parallel Analyzer
+# Clockless Parallel Analyzer
 
-Saleae Simple Parallel Analyzer
+Clockless Parallel Analyzer
+
+## Installation instructions
+
+Download the latest release from the [releases page](../../releases/latest).
+
+Follow the instructions in the Saleae documentation: [Import Custom Low Level Analyzer](https://support.saleae.com/getting-help/troubleshooting/technical-faq/setting-up-developer-directory).
 
 ## Getting Started
 

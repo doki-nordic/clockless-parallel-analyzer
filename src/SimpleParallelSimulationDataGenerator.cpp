@@ -29,19 +29,6 @@ void SimpleParallelSimulationDataGenerator::Initialize( U32 simulation_sample_ra
         mDataMasks.push_back( val );
     }
 
-    if( mSettings->mClockEdge == ParallelAnalyzerClockEdge::NegEdge )
-    {
-        mClock = mSimulationData.Add( mSettings->mClockChannel, mSimulationSampleRateHz, BIT_LOW );
-    }
-    else if( mSettings->mClockEdge == ParallelAnalyzerClockEdge::PosEdge )
-    {
-        mClock = mSimulationData.Add( mSettings->mClockChannel, mSimulationSampleRateHz, BIT_HIGH );
-    }
-    else if( mSettings->mClockEdge == ParallelAnalyzerClockEdge::DualEdge )
-    {
-        mClock = mSimulationData.Add( mSettings->mClockChannel, mSimulationSampleRateHz, BIT_HIGH );
-    }
-
     mValue = 0;
 }
 
@@ -61,10 +48,6 @@ U32 SimpleParallelSimulationDataGenerator::GenerateSimulationData( U64 largest_s
                 mData[ i ]->TransitionIfNeeded( BIT_LOW );
             else
                 mData[ i ]->TransitionIfNeeded( BIT_HIGH );
-        }
-        if( mSettings->mClockEdge != ParallelAnalyzerClockEdge::DualEdge )
-        {
-            mClock->Transition();
         }
 
         mSimulationData.AdvanceAll( 1000 );

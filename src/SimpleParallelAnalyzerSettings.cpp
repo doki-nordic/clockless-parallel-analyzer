@@ -5,8 +5,7 @@
 
 #pragma warning( disable : 4996 ) // warning C4996: 'sprintf': This function or variable may be unsafe
 
-SimpleParallelAnalyzerSettings::SimpleParallelAnalyzerSettings()
-    : mClockChannel( UNDEFINED_CHANNEL ), mClockEdge( ParallelAnalyzerClockEdge::PosEdge )
+SimpleParallelAnalyzerSettings::SimpleParallelAnalyzerSettings() : mShowValues( true ), mShowDots( true )
 {
     U32 count = 16;
     for( U32 i = 0; i < count; i++ )
@@ -25,16 +24,13 @@ SimpleParallelAnalyzerSettings::SimpleParallelAnalyzerSettings()
     }
 
 
-    mClockChannelInterface.reset( new AnalyzerSettingInterfaceChannel() );
-    mClockChannelInterface->SetTitleAndTooltip( "Clock", "Clock" );
-    mClockChannelInterface->SetChannel( mClockChannel );
+    mShowValuesInterface.reset( new AnalyzerSettingInterfaceBool() );
+    mShowValuesInterface->SetTitleAndTooltip( "Show Values", "Enable data values display on channel D0." );
+    mShowValuesInterface->SetValue( mShowValues );
 
-    mClockEdgeInterface.reset( new AnalyzerSettingInterfaceNumberList() );
-    mClockEdgeInterface->SetTitleAndTooltip( "Clock State", "Define whether the data is valid on Clock rising or falling edge" );
-    mClockEdgeInterface->AddNumber( static_cast<double>( ParallelAnalyzerClockEdge::PosEdge ), "Rising edge", "" );
-    mClockEdgeInterface->AddNumber( static_cast<double>( ParallelAnalyzerClockEdge::NegEdge ), "Falling edge", "" );
-    mClockEdgeInterface->AddNumber( static_cast<double>( ParallelAnalyzerClockEdge::DualEdge ), "Dual edge", "" );
-    mClockEdgeInterface->SetNumber( static_cast<double>( mClockEdge ) );
+    mShowDotsInterface.reset( new AnalyzerSettingInterfaceBool() );
+    mShowDotsInterface->SetTitleAndTooltip( "Show Dots", "Enable dots that marks data transition on all channels." );
+    mShowDotsInterface->SetValue( mShowDots );
 
 
     for( U32 i = 0; i < count; i++ )
@@ -42,8 +38,8 @@ SimpleParallelAnalyzerSettings::SimpleParallelAnalyzerSettings()
         AddInterface( mDataChannelsInterface[ i ] );
     }
 
-    AddInterface( mClockChannelInterface.get() );
-    AddInterface( mClockEdgeInterface.get() );
+    AddInterface( mShowValuesInterface.get() );
+    AddInterface( mShowDotsInterface.get() );
 
     AddExportOption( 0, "Export as text/csv file" );
     AddExportExtension( 0, "text", "txt" );
@@ -56,8 +52,6 @@ SimpleParallelAnalyzerSettings::SimpleParallelAnalyzerSettings()
         sprintf( text, "D%d", i );
         AddChannel( mDataChannels[ i ], text, false );
     }
-
-    AddChannel( mClockChannel, "Clock", false );
 }
 
 SimpleParallelAnalyzerSettings::~SimpleParallelAnalyzerSettings()
@@ -88,8 +82,8 @@ bool SimpleParallelAnalyzerSettings::SetSettingsFromInterfaces()
         mDataChannels[ i ] = mDataChannelsInterface[ i ]->GetChannel();
     }
 
-    mClockChannel = mClockChannelInterface->GetChannel();
-    mClockEdge = static_cast<ParallelAnalyzerClockEdge>( U32( mClockEdgeInterface->GetNumber() ) );
+    mShowValues = mShowValuesInterface->GetValue();
+    mShowDots = mShowDotsInterface->GetValue();
 
     ClearChannels();
     for( U32 i = 0; i < count; i++ )
@@ -98,8 +92,6 @@ bool SimpleParallelAnalyzerSettings::SetSettingsFromInterfaces()
         sprintf( text, "D%d", i );
         AddChannel( mDataChannels[ i ], text, mDataChannels[ i ] != UNDEFINED_CHANNEL );
     }
-
-    AddChannel( mClockChannel, "Clock", true );
 
     return true;
 }
@@ -112,8 +104,8 @@ void SimpleParallelAnalyzerSettings::UpdateInterfacesFromSettings()
         mDataChannelsInterface[ i ]->SetChannel( mDataChannels[ i ] );
     }
 
-    mClockChannelInterface->SetChannel( mClockChannel );
-    mClockEdgeInterface->SetNumber( static_cast<double>( mClockEdge ) );
+    mShowValuesInterface->SetValue( mShowValues );
+    mShowDotsInterface->SetValue( mShowDots );
 }
 
 void SimpleParallelAnalyzerSettings::LoadSettings( const char* settings )
@@ -128,10 +120,8 @@ void SimpleParallelAnalyzerSettings::LoadSettings( const char* settings )
         text_archive >> mDataChannels[ i ];
     }
 
-    text_archive >> mClockChannel;
-    U32 edge;
-    text_archive >> edge;
-    mClockEdge = static_cast<ParallelAnalyzerClockEdge>( edge );
+    text_archive >> mShowValues;
+    text_archive >> mShowDots;
 
     ClearChannels();
     for( U32 i = 0; i < count; i++ )
@@ -140,8 +130,6 @@ void SimpleParallelAnalyzerSettings::LoadSettings( const char* settings )
         sprintf( text, "D%d", i );
         AddChannel( mDataChannels[ i ], text, mDataChannels[ i ] != UNDEFINED_CHANNEL );
     }
-
-    AddChannel( mClockChannel, "Clock", true );
 
     UpdateInterfacesFromSettings();
 }
@@ -157,9 +145,8 @@ const char* SimpleParallelAnalyzerSettings::SaveSettings()
         text_archive << mDataChannels[ i ];
     }
 
-    text_archive << mClockChannel;
-    U32 edge = static_cast<U32>( mClockEdge );
-    text_archive << edge;
+    text_archive << mShowValues;
+    text_archive << mShowDots;
 
     return SetReturnString( text_archive.GetString() );
 }

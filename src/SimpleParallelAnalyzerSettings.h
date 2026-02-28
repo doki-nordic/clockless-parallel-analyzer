@@ -25,15 +25,14 @@ class SimpleParallelAnalyzerSettings : public AnalyzerSettings
 
 
     std::vector<Channel> mDataChannels;
-    Channel mClockChannel;
-
-    ParallelAnalyzerClockEdge mClockEdge;
+    bool mShowValues;
+    bool mShowDots;
 
   protected:
     std::vector<AnalyzerSettingInterfaceChannel*> mDataChannelsInterface;
 
-    std::unique_ptr<AnalyzerSettingInterfaceChannel> mClockChannelInterface;
-    std::unique_ptr<AnalyzerSettingInterfaceNumberList> mClockEdgeInterface;
+    std::unique_ptr<AnalyzerSettingInterfaceBool> mShowValuesInterface;
+    std::unique_ptr<AnalyzerSettingInterfaceBool> mShowDotsInterface;
 };
 
 #endif // SIMPLEPARALLEL_ANALYZER_SETTINGS

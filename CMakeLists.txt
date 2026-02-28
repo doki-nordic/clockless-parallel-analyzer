@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.11)
-project(simple_parallel_analyzer)
+project(clockless_parallel_analyzer)
 
 add_definitions( -DLOGIC2 )
 
@@ -24,4 +24,4 @@ src/SimpleParallelSimulationDataGenerator.cpp
 src/SimpleParallelSimulationDataGenerator.h
 )
 
-add_analyzer_plugin(simple_parallel_analyzer SOURCES ${SOURCES})
+add_analyzer_plugin(clockless_parallel_analyzer SOURCES ${SOURCES})

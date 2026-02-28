@@ -20,9 +20,16 @@ void SimpleParallelAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel
     ClearResultStrings();
     Frame frame = GetFrame( frame_index );
 
-    char number_str[ 128 ];
-    AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 16, number_str, 128 );
-    AddResultString( number_str );
+    if( frame.mType == 1 )
+    {
+        AddResultString( "stop" );
+    }
+    else
+    {
+        char number_str[ 128 ];
+        AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 16, number_str, 128 );
+        AddResultString( number_str );
+    }
 }
 
 void SimpleParallelAnalyzerResults::GenerateExportFile( const char* file, DisplayBase display_base, U32 export_type_user_id )
